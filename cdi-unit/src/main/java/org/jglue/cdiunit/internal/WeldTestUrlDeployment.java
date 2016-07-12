@@ -21,15 +21,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.jar.Attributes;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
@@ -44,6 +36,7 @@ import javax.inject.Provider;
 import javax.interceptor.Interceptor;
 
 import org.jboss.weld.bootstrap.api.Bootstrap;
+import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
@@ -65,6 +58,7 @@ import org.jglue.cdiunit.internal.servlet.MockHttpServletResponseImpl;
 import org.jglue.cdiunit.internal.servlet.MockHttpSessionImpl;
 import org.jglue.cdiunit.internal.servlet.MockServletContextImpl;
 import org.jglue.cdiunit.internal.servlet.ServletObjectsProducer;
+import org.jglue.cdiunit.services.WeldServicesLoader;
 import org.mockito.Mock;
 import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
@@ -297,6 +291,16 @@ public class WeldTestUrlDeployment implements Deployment {
 			if (!clazz.startsWith("org.jglue.cdiunit.internal.")) {
 				log.debug(clazz);
 			}
+		}
+
+		addServices();
+
+	}
+
+	private void addServices() {
+		ServiceLoader<WeldServicesLoader> services = ServiceLoader.load(WeldServicesLoader.class);
+		for (WeldServicesLoader weldServicesLoader : services) {
+			weldServicesLoader.load(serviceRegistry);
 		}
 
 	}

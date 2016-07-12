@@ -45,6 +45,13 @@
             <version>1.7.21</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.jglue.cdi-unit</groupId>
+            <artifactId>cdi-unit</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+
     </dependencies>
 
     
