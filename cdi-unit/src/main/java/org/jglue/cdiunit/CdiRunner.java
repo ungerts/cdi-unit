@@ -20,6 +20,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 
+import javax.naming.Context;
 import javax.naming.InitialContext;
 
 import org.jboss.weld.bootstrap.WeldBootstrap;
@@ -32,6 +33,7 @@ import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.util.reflection.Formats;
 import org.jglue.cdiunit.internal.Weld11TestUrlDeployment;
 import org.jglue.cdiunit.internal.WeldTestUrlDeployment;
+import org.jglue.cdiunit.internal.naming.CdiUnitContextFactory;
 import org.junit.Test;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
@@ -93,7 +95,10 @@ public class CdiRunner extends BlockJUnit4ClassRunner {
 			if("2.2.8 (Final)".equals(version) || "2.2.7 (Final)".equals(version)) {
 				startupException = new Exception("Weld 2.2.8 and 2.2.7 are not supported. Suggest upgrading to 2.2.9");	
 			}
-
+			String contextFactory = System.getProperty(Context.INITIAL_CONTEXT_FACTORY);
+			if (contextFactory == null || contextFactory.equals("")) {
+				System.setProperty(Context.INITIAL_CONTEXT_FACTORY, CdiUnitContextFactory.class.getName());
+			}
 			weld = new Weld() {
 
 				protected Deployment createDeployment(ResourceLoader resourceLoader, CDI11Bootstrap bootstrap) {
@@ -173,7 +178,6 @@ public class CdiRunner extends BlockJUnit4ClassRunner {
 					}
 					throw startupException;
 				}
-				System.setProperty("java.naming.factory.initial", "org.jglue.cdiunit.internal.naming.CdiUnitContextFactory");
 				InitialContext initialContext = new InitialContext();
 				initialContext.bind("java:comp/BeanManager", container.getBeanManager());
 
