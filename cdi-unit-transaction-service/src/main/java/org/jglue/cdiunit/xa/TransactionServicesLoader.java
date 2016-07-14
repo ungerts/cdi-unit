@@ -1,6 +1,7 @@
 package org.jglue.cdiunit.xa;
 
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jglue.cdiunit.services.WeldServicesLoader;
 
 /**
@@ -10,6 +11,6 @@ public class TransactionServicesLoader implements WeldServicesLoader {
 
     @Override
     public void load(ServiceRegistry serviceRegistry) {
-        serviceRegistry.add(TransactionServicesImpl.class, new TransactionServicesImpl());
+        serviceRegistry.add(TransactionServices.class, new TransactionServicesImpl());
     }
 }
